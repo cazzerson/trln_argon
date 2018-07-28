@@ -27,8 +27,25 @@ module TrlnArgon
       end
     end
 
-    def institution
-      fetch(TrlnArgon::Fields::INSTITUTION, []).first
+    # Organizational association for the record.
+    # "Record is considered local to..."
+    # Expected to be one of: duke, unc, nscu, nccu, trln
+    # Used to group records for display purposes
+    def record_association
+      case fetch(TrlnArgon::Fields::INSTITUTION, []).count
+      when 1
+        record_owner
+      else
+        'trln'
+      end
+    end
+
+    # Institution that is responsible for the record
+    # Used to lookup location codes. Also, used to
+    # set record_association.
+    # Expected to be one of: duke, unc, ncsu, nccu
+    def record_owner
+      fetch(TrlnArgon::Fields::OWNER, []).first.to_s.downcase
     end
 
     def isbn_with_qualifying_info

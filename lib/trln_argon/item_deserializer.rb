@@ -4,7 +4,7 @@ module TrlnArgon
   module ItemDeserializer
     include ActionView::Helpers::TextHelper
     def deserialize
-      (self[TrlnArgon::Fields::ITEMS] || ['{}']).map { |d| stringified_hash_to_json(d) }
+      (self[TrlnArgon::Fields::ITEMS] || ['{}']).map { |d| JSON.parse(d) }
                                                 .group_by { |rec| rec['loc_b'] }
     end
 
@@ -13,8 +13,8 @@ module TrlnArgon
     end
 
     def deserialize_holdings
-      items = (self[TrlnArgon::Fields::ITEMS] || {}).map { |x| stringified_hash_to_json(x) }
-      holdings = (self[TrlnArgon::Fields::HOLDINGS] || {}).map { |x| stringified_hash_to_json(x) }
+      items = (self[TrlnArgon::Fields::ITEMS] || {}).map { |x| JSON.parse(x) }
+      holdings = (self[TrlnArgon::Fields::HOLDINGS] || {}).map { |x| JSON.parse(x) }
       # { LOC_B => { LOC_N => [ items ] } }
       items_intermediate = Hash[items.group_by { |i| i['loc_b'] }.map do |loc_b, locations_narrow|
         [loc_b, locations_narrow.group_by { |i| i['loc_n'] }]
@@ -51,17 +51,6 @@ module TrlnArgon
     def cn_prefix(items)
       cns = items.reject(&:nil?).map { |i| i['call_no'].to_s.gsub(/\d{4}$/, '') }
       cns[0]
-    end
-
-    def stringified_hash_to_json(x)
-      JSON.parse(x.gsub('=>', ':'))
-    end
-
-     # quick hack, for the moment: we need to guess the context for looking up
-    # location and status codes when displaying items, and the items themselves
-    # don't contain this data.
-    def record_owner
-      self.institution
     end
   end
 end

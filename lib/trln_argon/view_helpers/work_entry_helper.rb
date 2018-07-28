@@ -25,13 +25,13 @@ module TrlnArgon
 
       def work_entry_label(work)
         return if work[:label].empty?
-        "#{CGI.escapeHTML(work[:label])}: "
+        "#{work[:label]}: "
       end
 
       def work_entry_author(work)
         return if work[:author].empty?
         search_params = { search_field: 'author', q: work[:author] }
-        link_to(CGI.escapeHTML(work[:author]),
+        link_to(work[:author],
                 search_action_url(search_params),
                 class: 'progressive-link')
       end
@@ -43,23 +43,23 @@ module TrlnArgon
 
       def work_entry_title_variation(work)
         return if work[:title_variation].empty?
-        "(Some editions have title: #{CGI.escapeHTML(work[:title_variation])}) "
+        "(Some editions have title: #{work[:title_variation]}) "
       end
 
       def work_entry_details(work)
         return if work[:details].empty?
-        "#{CGI.escapeHTML(work[:details])} "
+        "#{work[:details]} "
       end
 
       def work_entry_isbn(work)
         return if work[:isbn].empty?
-        isbn = work[:isbn].map { |v| CGI.escapeHTML(v) }.join(', ')
+        isbn = work[:isbn].join(', ')
         "ISBN: #{isbn} "
       end
 
       def work_entry_issn(work)
         return if work[:issn].empty?
-        "ISSN: #{CGI.escapeHTML(work[:issn])}"
+        "ISSN: #{work[:issn]}"
       end
 
       def build_work_entry_title_links(title_linking)
@@ -74,7 +74,7 @@ module TrlnArgon
         sr_only_segment = title_segments[0..-1].join(' ')
         last_segment = title_segments[-1]
         if sr_only_segment != last_segment
-          sr_span = content_tag(:span, CGI.escapeHTML(sr_only_segment), class: 'sr-only')
+          sr_span = content_tag(:span, sr_only_segment, class: 'sr-only')
         end
         "#{sr_span} #{CGI.escapeHTML(last_segment)}"
       end

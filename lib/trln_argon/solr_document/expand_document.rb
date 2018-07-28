@@ -15,10 +15,26 @@ module TrlnArgon
       end
 
       def expanded_holdings
-        @expanded_holdings ||= Hash[expanded_documents.map do |doc|
-          [doc.institution,
+        @expanded_holdings ||= Hash[docs_with_merged_holdings.map do |doc|
+          [doc.record_association,
            doc.holdings]
         end]
+      end
+
+      def docs_with_merged_holdings
+        array = []
+        docs_merged_by_inst.each do |inst, docs|
+          first_doc = docs.first.dup
+          first_doc[TrlnArgon::Fields::ITEMS] = docs.flat_map { |d| d[TrlnArgon::Fields::ITEMS] }.compact
+          first_doc[TrlnArgon::Fields::HOLDINGS] = docs.flat_map { |d| d[TrlnArgon::Fields::HOLDINGS] }.compact
+          first_doc[TrlnArgon::Fields::URLS] = docs.flat_map { |d| d[TrlnArgon::Fields::URLS] }.compact
+          array << first_doc
+        end
+        array
+      end
+
+      def docs_merged_by_inst
+        @docs_merged_by_inst ||= expanded_documents.group_by { |doc| doc.record_association.first }
       end
 
       def expanded_documents
@@ -31,7 +47,7 @@ module TrlnArgon
         @expanded_docs_search ||= begin
           controller = CatalogController.new
           search_builder = SearchBuilder.new([:add_query_to_solr], controller)
-          query = search_builder.where("#{TrlnArgon::Fields::ROLLUP_ID}:#{self[TrlnArgon::Fields::ROLLUP_ID]}")
+          query = search_builder.where("#{TrlnArgon::Fields::ROLLUP_ID}:#{self[TrlnArgon::Fields::ROLLUP_ID]}").merge(rows: 100)
           controller.repository.search(query)
         end
       end

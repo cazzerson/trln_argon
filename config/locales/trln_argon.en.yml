@@ -62,6 +62,9 @@ en:
             unc:
                 short_name: "UNC"
                 long_name: "UNC Libraries"
+            trln:
+                short_name: "TRLN"
+                long_name: "Triangle Research Libraries"
 
 
         feedback:

@@ -17,13 +17,13 @@ module TrlnArgon
       def names_name(name)
         return if name[:name].empty?
         search_params = { search_field: 'author', q: name[:name] }
-        link_to(CGI.escapeHTML(name[:name]),
+        link_to(name[:name],
                 search_action_url(search_params))
       end
 
       def names_rel(name)
         return if name[:rel].empty?
-        ", #{CGI.escapeHTML(name[:rel])}"
+        ", #{name[:rel]}"
       end
     end
   end

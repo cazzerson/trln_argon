@@ -35,22 +35,8 @@ module TrlnArgon
 
       # rubocop:disable MethodLength
       def initialize
-        @preferred_records             = 'unc'
-        @local_institution_code        = 'unc'
-        @local_records                 = 'unc,trln'
-        @application_name              = 'TRLN Argon'
         @solr_fields =
           field_constants(default_fields.merge(override_fields).deep_symbolize_keys)
-        @refworks_url =
-          'http://www.refworks.com.libproxy.lib.unc.edu/express/ExpressImport.asp?' \
-          'vendor=SearchUNC&filter=RIS%20Format&encoding=65001&url='
-        @root_url = 'https://discovery.trln.org'
-        @article_search_url =
-          'http://libproxy.lib.unc.edu/login?'\
-          'url=http://unc.summon.serialssolutions.com/search?'\
-          's.secure=f&s.ho=t&s.role=authenticated&s.ps=20&s.q='
-        @contact_url = 'https://library.unc.edu/ask/'
-        @feedback_url = ''
       end
 
       private
